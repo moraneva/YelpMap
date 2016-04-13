@@ -28,6 +28,7 @@ function _processCounties(data, offset) {
             .then((function (county, i) {
                 return function (result) {
                     var numBusinesses = result["total"];
+
                     console.log("=========================================================")
                     console.log("Cycling through " + numBusinesses + " business ratings for " + counties[i].split(',')[1]);
                     var ratingTotal = 0;
@@ -35,7 +36,16 @@ function _processCounties(data, offset) {
                     ratingTotal += _addRatings(result);
 
                     if (numBusinesses > 20) {
-
+                        var offset = 20;
+                        while (offset < numBusinesses) {
+                            _searchYelp(county.split(',')[1], offset, (function (ratingTotal) {
+                                return function (result) {
+                                    ratingTotal += _addRatings(result);
+                                    console.log(ratingTotal);
+                                }
+                            })(ratingTotal));
+                            offset += 20;
+                        }
                     }
                     output[county.split(',')[0]] = ratingTotal;
                 };
@@ -47,6 +57,12 @@ function _processCounties(data, offset) {
     }
 
 
+}
+
+function _searchYelp(county, offset, callback) {
+    yelp.search({term: 'food', location: county, offset: offset}).then(function (result) {
+        callback(result);
+    });
 }
 
 function _addRatings(jsonObject) {
