@@ -1,0 +1,85 @@
+body {
+    position: relative;
+    padding-top: 50px;
+}
+
+cite {
+    font-style:italic;
+}
+
+#flash-message {
+    position: absolute;
+    top: 20%;
+    left: 35%;
+    width: 25%;
+    font-size: 40px;
+    padding: 20px;
+    background: #fff;
+}
+
+.voffset {margin:.5em 0;}
+.centered {text-align:center;}
+.clearfix {clear:both;}
+
+.caret {
+    opacity:.8;
+}
+.small {
+    font-size:.8em;
+}
+
+.navbar-collapse.collapse {
+    padding-right:0;
+}
+.navbar-inverse .navbar-nav > li >a {
+    font-weight: bold;
+    font-size: 1.3em;
+    color: rgb(50, 118, 177);
+}
+.navbar ul.share a {
+    width:90%;
+    margin:2% 5% 5%;
+    font-size:1.1em;
+}
+.col-2 {
+    -moz-column-count: 2;
+    -moz-column-gap: 10px;
+    -webkit-column-count: 2;
+    -webkit-column-gap: 10px;
+    column-count: 2;
+    column-gap: 10px;
+}
+
+/* map styles */
+#map rect.background {
+    fill: #fff;
+}
+text {
+    color: #222;
+    font-size: 12px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.footer {
+    fill: #fff;
+    fill-opacity: .8;
+}
+text.title {
+    font-size: 20px;
+}
+text.link {
+    fill: #0033ff;
+}
+.info-menu {
+    margin:.5em;
+    width: 800px;
+}
+.info-menu h1 {
+    font-size: 1.8em;
+}
+.info-menu h2 {
+    font-size: 1.6em;
+}
+
+.info-menu blockquote {
+    font-size: 1em;
+}

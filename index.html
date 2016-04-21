@@ -1,11 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <script type="text/css" src="css/bootstrap.min.css"></script>
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="USA counties choropleth map showing data on adult obesity prevalence provided by the NCCDPHP.">
+    <meta name="author" content="Ramiro Gómez">
+
+    <title>Adult Obesity: Percent of US adults that report a BMI >= 30</title>
+
+
+    <meta property="og:image"
+          content="http://maps.ramiro.org/img/large/adult-obesity-percent-of-us-adults-that-report-a-bmi-30.png">
+
+
+    <link rel="shortcut icon" href="/img/favicon.png">
+    <link rel="alternate" type="application/rss+xml" title="RSS feed" href="/rss.xml">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="d3-geomap/css/d3.geomap.css">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/sortable/0.6.0/css/sortable-theme-bootstrap.css">
+
+    <style>
+        .state-borders {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2px;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+        }
+
+        .unit {
+            stroke: #444;
+        }
+    </style>
+
 </head>
+
 <body>
-Hey
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
+
+
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script>
+    $(function () {
+        $('.nav a[href="' + document.location.pathname + '"]').parent('li').attr('class', 'active');
+        $('a[href*="http"]').attr('target', '_blank');
+        $('#info').click(function () {
+            document.location.hash = 'info'
+        });
+    });
+</script>
+
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="d3-geomap/vendor/d3.geomap.dependencies.min.js"></script>
+<script src="d3-geomap/js/d3.geomap.min.js"></script>
+
+
+<script>
+    var config = {
+        canonical: 'http://maps.ramiro.org/map/usa/adult-obesity/',
+        columns: ['Rating'],
+        data: [{'file': 'output.csv', 'source': 'http://www.countyhealthrankings.org/rankings/data'}],
+        title: "Adult Obesity: Percent of US adults that report a BMI >= 30",
+        description: "USA counties choropleth map showing data on adult obesity prevalence provided by the NCCDPHP.",
+        info: "",
+        animate: ""
+    };
+    var column = '';
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/sortable/0.6.0/js/sortable.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/datamap.js"></script>
+<script src="js/saveSvgAsPng.js"></script>
+<script>
+    d3.select('#svg2png').on('click', function () {
+        saveSvgAsPng(d3.select('#map svg').node(), sluggify(document.title) + '.png', 1);
+    });
+</script>
+
+<script>
+    var steps = parseInt('' || 9, 10); // avoid errors when steps is not set
+    var scheme = 'YlGnBu';
+
+    config.format = '' || ',.02f';
+    config.scheme = scheme;
+    config.steps = steps;
+    config.domain = '' || null;
+
+
+</script>
+<script src="js/choropleth.js"></script>
+
+
+<script>
+    // Set up map.
+    var map = d3.geomap.choropleth()
+            .geofile('d3-geomap/topojson/countries/USAcounties.json')
+            .projection(d3.geo.albersUsa)
+            .units('counties')
+            .unitId('FIPS')
+            .width(width)
+            .height(height)
+            .colors(colorbrewer[config.scheme][config.steps])
+            .column(column)
+            .scale([width / 1.1])
+            .translate([width / 2, height / 2.2])
+            .legend(true)
+            .postUpdate(stateBorders);
+
+    function stateBorders() {
+        var svg = map.svg;
+        svg.selectAll('.state-borders').remove();
+
+        var g = svg.append('g')
+                .attr('class', 'zoom state-borders')
+
+        g.append('path')
+                .datum(topojson.mesh(map.geo, map.geo.objects.counties, function (a, b) {
+                    return a.id / 1000 ^ b.id / 1000;
+                }))
+                .attr('class', 'state-borders')
+                .attr('d', map.properties.path);
+
+        annotation(map);
+    }
+
+    if (config.domain) {
+        map.domain(JSON.parse(config.domain));
+    }
+
+    d3.csv(config.data[0].file, function (error, data) {
+        d3.select('#map')
+                .datum(data)
+                .call(map.draw, map);
+    });
+</script>
 </body>
 </html>
