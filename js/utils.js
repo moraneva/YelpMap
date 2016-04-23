@@ -23,7 +23,7 @@ function dimensions() {
     footer_width = comp_width - 160, width = +comp_width;
     height = comp_width * 0.5;
 
-    return { width: width, height: height };
+    return {width: width, height: height};
 }
 
 // http://bl.ocks.org/larskotthoff/11406992
@@ -79,7 +79,8 @@ function wrap(text, width) {
                 line.pop();
                 tspan.text(line.join(' '));
                 line = [word];
-                tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word);
+                tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em')
+                    .text(word);
             }
         }
     });
@@ -96,27 +97,29 @@ function title(map) {
     }
     return document.title;
 }
-//
-// function annotation(map) {
-//     var rh = 75,
-//         svg = map.svg,
-//         xOffset = 160;
-//
-//     svg.select('g.footer').remove();
-//
-//     var fg = svg.append('g').attr('class', 'footer').attr('width', '100%').attr('height', rh).attr('transform', 'translate(0,' + (height - rh) + ')');
-//
-//     fg.append('rect').attr('class', 'footer').attr('width', footer_width).attr('height', rh).attr('x', xOffset);
-//
-//     fg.append('text').attr('class', 'title').attr('width', footer_width).attr('x', xOffset).attr('y', 20).text(title(map));
-//
-//     fg.append('text').attr('width', footer_width).attr('x', xOffset).attr('y', 35).text('Data: ');
-//
-//     fg.append('svg:a').attr('xlink:href', config.data[0].source).append('svg:text').text(config.data[0].source.replace('http://', '')).attr('class', 'link').attr('x', xOffset + 32).attr('y', 35);
-//
-//     fg.append('text').attr('width', footer_width).attr('x', xOffset).attr('y', 50).text('Source: ');
-//
-//     fg.append('svg:a').attr('xlink:href', config.canonical).attr('class', 'map_source').append('svg:text').text(config.canonical.replace('http://', '')).attr('class', 'link').attr('x', xOffset + 44).attr('y', 50);
-//
-//     fg.append('text').attr('x', xOffset).attr('y', 65).text('CC BY-SA 2014 Ramiro Gómez');
-// }
+
+function annotation(map) {
+    var rh = 75,
+        svg = map.svg,
+        xOffset = 160;
+
+    svg.select('g.footer').remove();
+
+    var fg = svg.append('g').attr('class', 'footer').attr('width', '100%').attr('height', rh)
+        .attr('transform', 'translate(0,' + (height - rh) + ')');
+
+    fg.append('rect').attr('class', 'footer').attr('width', footer_width).attr('height', rh).attr('x', xOffset);
+
+    fg.append('text').attr('class', 'title').attr('width', footer_width).attr('x', xOffset).attr('y', 20)
+        .text(title(map));
+
+    fg.append('text').attr('width', footer_width).attr('x', xOffset).attr('y', 35).text('Data: ');
+
+    fg.append('svg:a').attr('xlink:href', config.data[0].source).append('svg:text')
+        .text(config.data[0].source.replace('http://', '')).attr('class', 'link').attr('x', xOffset + 32).attr('y', 35);
+
+    fg.append('text').attr('width', footer_width).attr('x', xOffset).attr('y', 50).text('Source: ');
+
+    fg.append('svg:a').attr('xlink:href', config.canonical).attr('class', 'map_source').append('svg:text')
+        .text(config.canonical.replace('http://', '')).attr('class', 'link').attr('x', xOffset + 44).attr('y', 50);
+}

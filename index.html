@@ -4,15 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-          content="USA counties choropleth map showing data on adult obesity prevalence provided by the NCCDPHP.">
-    <meta name="author" content="Ramiro Gómez">
+          content="USA counties choropleth map showing data average yelp ratings">
+    <meta name="author" content="Evan Moran">
 
-    <title>Adult Obesity: Percent of US adults that report a BMI >= 30</title>
-
-
-    <meta property="og:image"
-          content="http://maps.ramiro.org/img/large/adult-obesity-percent-of-us-adults-that-report-a-bmi-30.png">
-
+    <title>Map of Average Yelp Ratings by County</title>
 
     <link rel="shortcut icon" href="/img/favicon.png">
     <link rel="alternate" type="application/rss+xml" title="RSS feed" href="/rss.xml">
@@ -22,64 +17,73 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="d3-geomap/css/d3.geomap.css">
 
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.2.4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.min.js"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/sortable/0.6.0/css/sortable-theme-bootstrap.css">
 
     <style>
         .state-borders {
             fill: none;
-            stroke: #fff;
+            stroke: #FFFFFF;
             stroke-width: 2px;
             stroke-linejoin: round;
             stroke-linecap: round;
         }
 
         .unit {
-            stroke: #444;
+            stroke: #444444;
         }
     </style>
 
 </head>
 
-<body>
+<body ng-app="myApp" ng-controller="mainController">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" ui-sref="index">Yelp Ratings Map</a>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
+            <h1 class="text-center">Ratings Map</h1>
             <div id="map"></div>
         </div>
     </div>
 </div>
 
-
 <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-<script>
-    $(function () {
-        $('.nav a[href="' + document.location.pathname + '"]').parent('li').attr('class', 'active');
-        $('a[href*="http"]').attr('target', '_blank');
-        $('#info').click(function () {
-            document.location.hash = 'info'
-        });
-    });
-</script>
 
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="d3-geomap/vendor/d3.geomap.dependencies.min.js"></script>
 <script src="d3-geomap/js/d3.geomap.min.js"></script>
 
-
 <script>
     var config = {
-        canonical: 'http://maps.ramiro.org/map/usa/adult-obesity/',
+        canonical: 'https://www.yelp.com/developers/documentation/v2/overview',
         columns: ['Rating'],
-        data: [{'file': 'output.csv', 'source': 'http://www.countyhealthrankings.org/rankings/data'}],
-        title: "Adult Obesity: Percent of US adults that report a BMI >= 30",
-        description: "USA counties choropleth map showing data on adult obesity prevalence provided by the NCCDPHP.",
+        data: [{'file': 'yelpRatings.csv', 'source': 'yelpRatings.csv'}],
+        title: "Food Ratings: Average restaurant rating by county",
+        description: "",
         info: "",
         animate: ""
     };
@@ -88,13 +92,8 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/sortable/0.6.0/js/sortable.min.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/datamap.js"></script>
-<script src="js/saveSvgAsPng.js"></script>
-<script>
-    d3.select('#svg2png').on('click', function () {
-        saveSvgAsPng(d3.select('#map svg').node(), sluggify(document.title) + '.png', 1);
-    });
-</script>
-
+<script src="js/app.js"></script>
+<script src="js/app.states.js"></script>
 <script>
     var steps = parseInt('' || 9, 10); // avoid errors when steps is not set
     var scheme = 'YlGnBu';
@@ -104,10 +103,8 @@
     config.steps = steps;
     config.domain = '' || null;
 
-
 </script>
 <script src="js/choropleth.js"></script>
-
 
 <script>
     // Set up map.
